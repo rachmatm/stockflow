@@ -86,4 +86,4 @@ Runtime services:
 | API | https://api.demo.rachmat.pro |
 | Frontend | https://demo.rachmat.pro |
 | Mailpit | http://100.66.185.79:8025 |
-| Queue UI | https://api.demo.rachmat.pro/mission_control/jobs |
+| Queue UI | https://api.demo.rachmat.pro/jobs |

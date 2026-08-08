@@ -9,7 +9,7 @@ Demo application showcasing the order lifecycle with stock reservation, payment 
 | Frontend | https://demo.rachmat.pro |
 | API | https://api.demo.rachmat.pro |
 | API Docs (Rswag) | https://api.demo.rachmat.pro/api-docs |
-| Solid Queue Dashboard | https://api.demo.rachmat.pro/mission_control/jobs |
+| Solid Queue Dashboard | https://api.demo.rachmat.pro/jobs |
 | Mailpit (Email Inspector) | https://mailpit.rachmat.pro |
 
 ## Demo Accounts
