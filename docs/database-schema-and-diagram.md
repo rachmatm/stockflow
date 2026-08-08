@@ -16,29 +16,18 @@
 
 ## ER Diagram
 
-```text
-customers
- 1 ---- 1..* orders
-
-products
- 1 ---- 1..* order_items
- 1 ---- 1..* inventory_items
-
-warehouses
- 1 ---- 1..* orders
- 1 ---- 1..* inventory_items
-
-orders
- 1 ---- 1..* order_items
- 1 ---- 0..1 payments
- 1 ---- 1..* stock_movements
-
-payments
- 1 ---- 0..1 admins (verified_by_id)
-
-stock_movements
- 1 ---- 1 inventory_items
- 1 ---- 0..1 orders
+```mermaid
+erDiagram
+    customers ||--o{ orders : places
+    products ||--o{ order_items : contains
+    products ||--o{ inventory_items : stored_in
+    warehouses ||--o{ orders : ships
+    warehouses ||--o{ inventory_items : holds
+    orders ||--o{ order_items : contains
+    orders ||--o{ stock_movements : has
+    orders ||--o| payments : has
+    admins ||--o| payments : verifies
+    inventory_items ||--o{ stock_movements : records
 ```
 
 ## Rails-style Schema

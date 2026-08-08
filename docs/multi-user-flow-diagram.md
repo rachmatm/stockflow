@@ -11,138 +11,174 @@
 
 ## Main Success Flow
 
-```text
-BUYER
-  1. Selects products and quantities
-  2. Checks stock availability
-  3. Places order with selected or automatic warehouse
-  4. System reserves stock
-  5. System creates pending payment order
-  6. System sends invoice email
-  7. Buyer uploads payment proof
-  8. Order moves to payment_review
+```mermaid
+sequenceDiagram
+    participant Buyer
+    participant API
+    participant Inventory
+    participant DB
+    participant Admin
+    participant Mailer
 
-ADMIN
-  9. Receives admin notification email
- 10. Reviews payment proof
- 11. Verifies payment
- 12. System converts reserved stock to sold stock
- 13. Order becomes paid
- 14. System sends paid confirmation email
+    Buyer->>API: Selects products and quantities
+    API->>Inventory: Checks stock availability
+    Buyer->>API: Places order (auto/selected warehouse)
+    API->>Inventory: Reserves stock
+    API->>DB: Creates pending payment order
+    API->>Mailer: Sends invoice email
+    Buyer->>API: Uploads payment proof
+    API->>DB: Order moves to payment_review
 ```
 
 ## Rejected Payment Flow
 
-```text
-BUYER
-  1. Uploads payment proof
-  2. Order moves to payment_review
+```mermaid
+sequenceDiagram
+    participant Buyer
+    participant API
+    participant Admin
+    participant Inventory
+    participant DB
+    participant Mailer
 
-ADMIN
-  3. Reviews payment proof
-  4. Rejects payment with reason
-
-SYSTEM
-  5. Sets payment status to rejected
-  6. Cancels order
-  7. Releases reserved stock
-  8. Sends rejected email to buyer
+    Buyer->>API: Uploads payment proof
+    API->>DB: Order moves to payment_review
+    Admin->>API: Reviews and rejects payment (with reason)
+    API->>DB: Payment status = rejected
+    API->>DB: Order = cancelled
+    API->>Inventory: Releases reserved stock
+    API->>Mailer: Sends rejected email to buyer
 ```
 
 ## Expired Payment Flow
 
-```text
-BUYER
-  1. Places order
-  2. Does not submit payment before deadline
+```mermaid
+sequenceDiagram
+    participant Buyer
+    participant API
+    participant Scheduler
+    participant Inventory
+    participant DB
+    participant Mailer
 
-SCHEDULER
-  3. Finds orders where status = pending_payment and payment_expires_at < now
-  4. Cancels expired orders
-  5. Releases reserved stock
-  6. Sends cancelled email to buyer
+    Buyer->>API: Places order
+    API->>DB: Order created (pending_payment)
+    Note over Scheduler,DB: Payment deadline passes
+    Scheduler->>DB: Finds expired pending orders
+    Scheduler->>DB: Order = cancelled
+    Scheduler->>Inventory: Releases reserved stock
+    Scheduler->>Mailer: Sends cancelled email to buyer
 ```
 
 ## Early Cancellation Flow
 
-```text
-BUYER
-  1. Places order
-  2. Cancels before uploading payment proof
+```mermaid
+sequenceDiagram
+    participant Buyer
+    participant API
+    participant Inventory
+    participant DB
 
-SYSTEM
-  3. Confirms order is still pending_payment
-  4. Confirms no payment exists
-  5. Cancels order
-  6. Releases reserved stock
+    Buyer->>API: Places order
+    Buyer->>API: Cancels before uploading payment proof
+    API->>DB: Confirms status = pending_payment
+    API->>DB: Confirms no payment exists
+    API->>DB: Order = cancelled
+    API->>Inventory: Releases reserved stock
 ```
 
 ## Sequence Diagram - Happy Path
 
-```text
-[Buyer] -> [API]: POST /orders
-[API] -> [Inventory]: check available stock
-[API] -> [Inventory]: reserve stock
-[API] -> [DB]: create order + order_items
-[API] -> [Mailpit]: invoice email
-[Buyer] -> [API]: submit payment proof
-[API] -> [DB]: create payment, order -> payment_review
-[API] -> [Mailpit]: admin notify email
-[Admin] -> [API]: verify payment
-[API] -> [Inventory]: sold movement + reduce on_hand
-[API] -> [DB]: order -> paid
-[API] -> [Mailpit]: paid confirmation email
+```mermaid
+sequenceDiagram
+    participant Buyer
+    participant API
+    participant Inventory
+    participant DB
+    participant Admin
+    participant Mailer
+
+    Buyer->>API: POST /orders
+    API->>Inventory: Check available stock
+    API->>Inventory: Reserve stock
+    API->>DB: Create order + order_items
+    API->>Mailer: Invoice email
+    Buyer->>API: Submit payment proof
+    API->>DB: Create payment, order -> payment_review
+    API->>Mailer: Admin notify email
+    Admin->>API: Verify payment
+    API->>Inventory: Sold movement + reduce on_hand
+    API->>DB: Order -> paid
+    API->>Mailer: Paid confirmation email
 ```
 
 ## Sequence Diagram - Expired Order
 
-```text
-[Buyer] -> [API]: POST /orders
-[API] -> [Inventory]: reserve stock
-[API] -> [DB]: create order status = pending_payment
-[Scheduler] -> [DB]: find expired pending orders
-[Scheduler] -> [Inventory]: release reserved stock
-[Scheduler] -> [DB]: order -> cancelled
-[Scheduler] -> [Mailpit]: cancelled email
+```mermaid
+sequenceDiagram
+    participant Buyer
+    participant API
+    participant Inventory
+    participant DB
+    participant Scheduler
+    participant Mailer
+
+    Buyer->>API: POST /orders
+    API->>Inventory: Reserve stock
+    API->>DB: Create order (status = pending_payment)
+    Note over Scheduler,DB: Payment expires
+    Scheduler->>DB: Find expired pending orders
+    Scheduler->>Inventory: Release reserved stock
+    Scheduler->>DB: Order -> cancelled
+    Scheduler->>Mailer: Cancelled email
 ```
 
 ## Sequence Diagram - Rejected Order
 
-```text
-[Buyer] -> [API]: submit payment proof
-[API] -> [DB]: payment status = submitted
-[API] -> [DB]: order -> payment_review
-[Admin] -> [API]: reject payment
-[API] -> [Inventory]: release reserved stock
-[API] -> [DB]: payment -> rejected, order -> cancelled
-[API] -> [Mailpit]: rejected email
+```mermaid
+sequenceDiagram
+    participant Buyer
+    participant API
+    participant Inventory
+    participant DB
+    participant Admin
+    participant Mailer
+
+    Buyer->>API: Submit payment proof
+    API->>DB: Payment status = submitted
+    API->>DB: Order -> payment_review
+    Admin->>API: Reject payment
+    API->>Inventory: Release reserved stock
+    API->>DB: Payment -> rejected, Order -> cancelled
+    API->>Mailer: Rejected email
 ```
 
 ## State Flow
 
-```text
-Order States
-  pending_payment
-    -> payment_review when payment proof submitted
-    -> cancelled when buyer cancels early
-    -> cancelled when payment expires
+```mermaid
+stateDiagram-v2
+    [*] --> pending_payment
+    pending_payment --> payment_review: Payment proof submitted
+    pending_payment --> cancelled: Buyer cancels early
+    pending_payment --> cancelled: Payment expires
+    payment_review --> paid: Admin verifies
+    payment_review --> cancelled: Admin rejects
+    paid --> fulfilled: Fulfillment completes
 
-  payment_review
-    -> paid when admin verifies
-    -> cancelled when admin rejects
+    note right of pending_payment
+        Stock Effect:
+        reserved_quantity increases
+    end note
 
-  paid
-    -> fulfilled manually/operationally when fulfillment completes
+    note right of paid
+        Stock Effect:
+        reserved_quantity decreases
+        on_hand_quantity decreases
+    end note
 
-Stock Effects
-  pending_payment:
-    reserved_quantity increases
-
-  paid:
-    reserved_quantity decreases
-    on_hand_quantity decreases
-
-  cancelled:
-    reserved_quantity decreases
-    on_hand_quantity unchanged
+    note right of cancelled
+        Stock Effect:
+        reserved_quantity decreases
+        on_hand_quantity unchanged
+    end note
 ```

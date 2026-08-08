@@ -9,16 +9,18 @@ Demo application showcasing the order lifecycle with stock reservation, payment 
 | Frontend | https://demo.rachmat.pro |
 | API | https://api.demo.rachmat.pro |
 | API Docs (Rswag) | https://api.demo.rachmat.pro/api-docs |
-| Mailpit (Email Inspector) | http://100.66.185.79:8025 |
 | Solid Queue Dashboard | https://api.demo.rachmat.pro/mission_control/jobs |
 
 ## Order Lifecycle
 
-```
-Order Placement -> Pending Payment -> Paid -> Fulfilled
-                              |
-                              +-> Timeout -> Cancelled (stock auto-released)
-                              +-> Rejected (admin) -> Rejected (stock auto-released)
+```mermaid
+flowchart TD
+    A[Order Placement] --> B[Pending Payment]
+    B --> C{Payment Confirmed?}
+    C -->|Yes| D[Paid]
+    C -->|No - Timeout| E[Cancelled<br/>Stock Auto-Released]
+    C -->|Rejected by Admin| F[Rejected<br/>Stock Auto-Released]
+    D --> G[Fulfilled]
 ```
 
 ### Step-by-step flow
@@ -35,12 +37,10 @@ Order Placement -> Pending Payment -> Paid -> Fulfilled
 
 ## Outgoing Emails
 
-All emails are routed through **Mailpit** (local SMTP sink) instead of real SMTP. This means:
+All outgoing emails are captured during development/staging:
 
-- No emails are sent to real recipients during development/staging
-- All outgoing emails are captured and viewable in the Mailpit web UI at `http://100.66.185.79:8025`
-- You can inspect raw headers, HTML source, and body of every email
-- Mailpit provides an API at `/api/v1/messages` for programmatic inspection
+- No emails are sent to real recipients
+- All outgoing emails can be inspected via the Mailpit API at `/api/v1/messages`
 
 ### Email types sent by the system
 
@@ -54,40 +54,6 @@ All emails are routed through **Mailpit** (local SMTP sink) instead of real SMTP
 | Admin verifies/rejects payment | Admin Notification | ops@stockflow-demo.id |
 | User registers | Welcome + Login PIN | New user |
 | User forgets PIN | Login PIN resend | Existing user |
-
-### Mailpit usage
-
-```bash
-# View all emails in terminal
-mailpit --list
-
-# Inspect latest email
-mailpit --latest
-
-# Access via browser
-open http://100.66.185.79:8025
-
-# Mailpit API
-curl http://100.66.185.79:8025/api/v1/messages | jq '.[0] | {from, to, subject}'
-
-# Delete all messages
-curl -X DELETE http://100.66.185.79:8025/api/v1/messages
-```
-
-### SMTP configuration
-
-```yaml
-# config/environments/development.rb (or staging)
-config.action_mailer.delivery_method = :smtp
-config.action_mailer.smtp_settings = {
-  address: "100.66.185.79",
-  port: 1025,          # Mailpit listens on 1025
-  user_name: "",
-  password: "",
-  authentication: :none
-}
-config.action_mailer.default_url_options = { host: "demo.rachmat.pro", port: 443 }
-```
 
 ## Project Structure (copied files)
 
@@ -126,17 +92,3 @@ app/
       welcome_email.html.erb
       login_pin_email.html.erb
 ```
-
-## Environment Variables
-
-| Variable | Value (staging) |
-|----------|-----------------|
-| SMTP_ADDRESS | 100.66.185.79 |
-| SMTP_PORT | 1025 (Mailpit) |
-| SMTP_AUTH | none |
-| SMTP_DOMAIN | demo.rachmat.pro |
-
-## Related
-
-- Full source: https://github.com/rachmatm/tata-niaga
-- Staging deployment: `bin/kamal deploy --destination staging`

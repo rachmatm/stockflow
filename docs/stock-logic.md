@@ -34,14 +34,15 @@ available_quantity >= requested_quantity
 
 When a buyer creates an order:
 
-```text
-1. Find selected or auto-chosen warehouse for each product
-2. Confirm inventory_items.warehouse_id + product_id
-3. Check available_quantity >= requested_quantity
-4. Increment reserved_quantity atomically
-5. Refresh the row and re-check reserved_quantity <= on_hand_quantity
-6. Create StockMovement(movement_type = reserved)
-7. Create Order and OrderItem in the same transaction
+```mermaid
+flowchart TD
+    A[Find selected or auto-chosen warehouse] --> B[Confirm inventory_items.warehouse_id + product_id]
+    B --> C{available_quantity >= requested?}
+    C -->|Yes| D[Increment reserved_quantity atomically]
+    D --> E[Refresh row and re-check<br/>reserved_quantity <= on_hand_quantity]
+    E --> F[Create StockMovement movement_type = reserved]
+    F --> G[Create Order and OrderItem<br/>in same transaction]
+    C -->|No| H[409 Conflict]
 ```
 
 ### Reservation Stock Movement
@@ -58,23 +59,25 @@ StockMovement
 
 If the buyer uses auto-selection:
 
-```text
-Search active warehouses for the requested product.
-Select the inventory row with the highest available_quantity.
-Proceed only if available_quantity >= requested_quantity.
+```mermaid
+flowchart TD
+    A[Search active warehouses for requested product] --> B{Row with highest<br/>available_quantity?}
+    B --> C{available_quantity >= requested?}
+    C -->|Yes| D[Proceed with reservation]
+    C -->|No| E[No warehouse available]
 ```
 
 ## Payment Verification - Stock Sold
 
 When admin verifies payment:
 
-```text
-For each order item:
-  1. Decrement reserved_quantity by item quantity
-  2. Decrement on_hand_quantity by item quantity
-  3. Create StockMovement(movement_type = sold)
-  4. Update order.status = paid
-  5. Send paid confirmation email
+```mermaid
+flowchart TD
+    A[For each order item] --> B[Decrement reserved_quantity by item qty]
+    B --> C[Decrement on_hand_quantity by item qty]
+    C --> D[Create StockMovement movement_type = sold]
+    D --> E[Update order.status = paid]
+    E --> F[Send paid confirmation email]
 ```
 
 Net stock effect:
@@ -89,12 +92,12 @@ available_quantity stays consistent because both sides decrease by qty
 
 When admin rejects payment:
 
-```text
-For each order item:
-  1. Decrement reserved_quantity by item quantity
-  2. Create StockMovement(movement_type = released)
-  3. Update order.status = cancelled
-  4. Send rejected email
+```mermaid
+flowchart TD
+    A[For each order item] --> B[Decrement reserved_quantity by item qty]
+    B --> C[Create StockMovement movement_type = released]
+    C --> D[Update order.status = cancelled]
+    D --> E[Send rejected email]
 ```
 
 Net stock effect:
@@ -116,23 +119,27 @@ orders.payment_expires_at < now
 
 For each expired order:
 
-```text
-1. Update order.status = cancelled
-2. Release reserved stock per order item
-3. Create StockMovement(movement_type = released)
-4. Send cancelled email
+```mermaid
+flowchart TD
+    A[CancelExpiredOrdersJob runs] --> B[Find orders where<br/>status = pending_payment<br/>AND payment_expires_at < now]
+    B --> C[For each expired order]
+    C --> D[Update order.status = cancelled]
+    D --> E[Release reserved stock per order item]
+    E --> F[Create StockMovement movement_type = released]
+    F --> G[Send cancelled email]
 ```
 
 ## Cancellation Before Payment
 
-A customer can cancel only while:
-
-```text
-order.status = pending_payment
-payment does not exist
+```mermaid
+flowchart TD
+    A[Customer requests cancellation] --> B{order.status = pending_payment?}
+    B -->|No| C[Cancellation denied]
+    B -->|Yes| D{Payment exists?}
+    D -->|Yes| E[Cancellation denied]
+    D -->|No| F[Cancel order]
+    F --> G[Release reserved stock]
 ```
-
-The system cancels the order and releases reserved stock.
 
 ## Idempotency
 

@@ -24,46 +24,51 @@ StockFlow Demo models an order and inventory system where buyers can place order
 
 ## High-Level Components
 
-```text
-Customer
-  -> Product Catalog / Availability API
-  -> Order Placement API
-  -> Payment Proof Upload API
-  -> Invoice / Order Status View
+```mermaid
+flowchart TD
+    subgraph Customer["Customer"]
+        C1["Product Catalog / Availability API"]
+        C2["Order Placement API"]
+        C3["Payment Proof Upload API"]
+        C4["Invoice / Order Status View"]
+    end
 
-Backend Rails API
-  -> Auth Controller
-  -> Orders Controller
-  -> Admin Payments Controller
-  -> StockMovement Controller
-  -> Order Mailer
-  -> Auth Mailer
-  -> Solid Queue Jobs
+    subgraph Backend["Backend Rails API"]
+        B1[Auth Controller]
+        B2[Orders Controller]
+        B3[Admin Payments Controller]
+        B4[StockMovement Controller]
+        B5[Order Mailer]
+        B6[Auth Mailer]
+        B7[Solid Queue Jobs]
+    end
 
-Databases
-  -> Primary DB: users, products, warehouses, orders, inventory, payments
-  -> Queue DB: job scheduler and recurring tasks
+    subgraph Databases["Databases"]
+        DB1["Primary DB<br/>users, products, warehouses,<br/>orders, inventory, payments"]
+        DB2["Queue DB<br/>job scheduler and recurring tasks"]
+    end
 
-External / Local Services
-  -> Mailpit SMTP sink
-  -> Docker Registry
-  -> Kamal deploy/proxy
+    subgraph External["External / Local Services"]
+        E1["Mailpit SMTP sink"]
+        E2["Docker Registry"]
+        E3["Kamal deploy/proxy"]
+    end
 ```
 
 ## Application Flow
 
-```text
-Customer chooses product
-  -> system checks available quantity
-  -> system reserves stock
-  -> system creates order with payment deadline
-  -> invoice email is enqueued
-  -> reminder job is scheduled
-  -> customer uploads payment proof
-  -> admin verifies or rejects
-  -> verified: stock becomes sold, on-hand decreases
-  -> rejected: reservation is released
-  -> expired: scheduled job cancels and releases reservation
+```mermaid
+flowchart TD
+    A[Customer chooses product] --> B[System checks available quantity]
+    B --> C[System reserves stock]
+    C --> D[System creates order with payment deadline]
+    D --> E[Invoice email is enqueued]
+    E --> F[Reminder job is scheduled]
+    F --> G[Customer uploads payment proof]
+    G --> H{Admin Action}
+    H -->|Verifies| I[Stock becomes sold<br/>on-hand decreases]
+    H -->|Rejects| J[Reservation is released]
+    K[Expired: scheduled job] --> L[Cancels and releases reservation]
 ```
 
 ## Deployment
