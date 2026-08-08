@@ -35,6 +35,13 @@ flowchart TD
 
 5. **Fulfillment & Notifications** -- Digital invoice/receipt is emailed to the buyer automatically.
 
+## Documentation
+
+- [High-Level Design](docs/high-level-design.md)
+- [Multi-User Flow Diagram](docs/multi-user-flow-diagram.md)
+- [Stock Reservation Logic](docs/stock-logic.md)
+- [Database Schema and Diagram](docs/database-schema-and-diagram.md)
+
 ## Outgoing Emails
 
 All outgoing emails are captured during development/staging:
