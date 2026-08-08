@@ -10,6 +10,36 @@ Demo application showcasing the order lifecycle with stock reservation, payment 
 | API | https://api.demo.rachmat.pro |
 | API Docs (Rswag) | https://api.demo.rachmat.pro/api-docs |
 | Solid Queue Dashboard | https://api.demo.rachmat.pro/mission_control/jobs |
+| Mailpit (Email Inspector) | https://mailpit.rachmat.pro |
+
+## Demo Buyer
+
+| Field | Value |
+|-------|-------|
+| Email | buyer@example.test |
+
+To log in as the demo buyer, visit the frontend and click "Forgot PIN". The system sends a Login PIN email to `buyer@example.test`. Open https://mailpit.rachmat.pro and inspect the latest email — the PIN is included in the body.
+
+## Outgoing Emails
+
+All outgoing emails are captured by Mailpit instead of being sent to real recipients:
+
+- No emails are sent to real recipients
+- All outgoing emails can be inspected at https://mailpit.rachmat.pro
+- Raw headers, HTML source, and body of every email are available
+
+### Email types sent by the system
+
+| Trigger | Email | Recipient |
+|---------|-------|-----------|
+| Order created | Invoice | Buyer |
+| Payment due (1 day before SLA) | Payment Reminder | Buyer |
+| Payment confirmed | Paid Confirmation | Buyer |
+| Payment expired | Cancelled Notification | Buyer |
+| Payment rejected (admin) | Rejected Notification | Buyer |
+| Admin verifies/rejects payment | Admin Notification | ops@stockflow-demo.id |
+| User registers | Welcome + Login PIN | New user |
+| User forgets PIN | Login PIN resend | Existing user |
 
 ## Order Lifecycle
 
@@ -41,26 +71,6 @@ flowchart TD
 - [Multi-User Flow Diagram](docs/multi-user-flow-diagram.md)
 - [Stock Reservation Logic](docs/stock-logic.md)
 - [Database Schema and Diagram](docs/database-schema-and-diagram.md)
-
-## Outgoing Emails
-
-All outgoing emails are captured during development/staging:
-
-- No emails are sent to real recipients
-- All outgoing emails can be inspected via the Mailpit API at `/api/v1/messages`
-
-### Email types sent by the system
-
-| Trigger | Email | Recipient |
-|---------|-------|-----------|
-| Order created | Invoice | Buyer |
-| Payment due (1 day before SLA) | Payment Reminder | Buyer |
-| Payment confirmed | Paid Confirmation | Buyer |
-| Payment expired | Cancelled Notification | Buyer |
-| Payment rejected (admin) | Rejected Notification | Buyer |
-| Admin verifies/rejects payment | Admin Notification | ops@stockflow-demo.id |
-| User registers | Welcome + Login PIN | New user |
-| User forgets PIN | Login PIN resend | Existing user |
 
 ## Project Structure (copied files)
 
