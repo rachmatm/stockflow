@@ -12,13 +12,14 @@ Demo application showcasing the order lifecycle with stock reservation, payment 
 | Solid Queue Dashboard | https://api.demo.rachmat.pro/mission_control/jobs |
 | Mailpit (Email Inspector) | https://mailpit.rachmat.pro |
 
-## Demo Buyer
+## Demo Accounts
 
-| Field | Value |
-|-------|-------|
-| Email | buyer@example.test |
+| Account | Email |
+|---------|-------|
+| Buyer | buyer@example.test |
+| Admin | admin@tiba.local |
 
-To log in as the demo buyer, visit the frontend and click "Forgot PIN". The system sends a Login PIN email to `buyer@example.test`. Open https://mailpit.rachmat.pro and inspect the latest email — the PIN is included in the body.
+To log in, visit the frontend and click "Forgot PIN". The system sends a Login PIN email to the account's email address. Open https://mailpit.rachmat.pro and inspect the latest email for that recipient — the PIN is included in the body.
 
 ## Outgoing Emails
 
