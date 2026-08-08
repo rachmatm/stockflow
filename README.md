@@ -42,6 +42,27 @@ All outgoing emails are captured by Mailpit instead of being sent to real recipi
 | User registers | Welcome + Login PIN | New user |
 | User forgets PIN | Login PIN resend | Existing user |
 
+### Monitoring via Solid Queue
+
+All outgoing emails are sent asynchronously through Solid Queue jobs. You can monitor job status, view failed jobs, and inspect arguments at:
+
+https://api.demo.rachmat.pro/jobs
+
+Key mailer jobs:
+
+| Job | Trigger |
+|-----|---------|
+| `OrderMailer.invoice_email` | Order created |
+| `PaymentReminderJob` | 1-day-before deadline |
+| `OrderMailer.paid_email` | Payment confirmed |
+| `OrderMailer.cancelled_email` | Payment expired |
+| `OrderMailer.rejected_email` | Payment rejected |
+| `OrderMailer.admin_notify_email` | Admin action required |
+| `AuthMailer.welcome_email` | User registers |
+| `AuthMailer.login_pin_email` | PIN resend |
+
+If a job fails, inspect the error log and retry from the dashboard.
+
 ## Order Lifecycle
 
 ```mermaid
