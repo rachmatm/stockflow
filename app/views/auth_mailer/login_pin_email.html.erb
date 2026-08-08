@@ -1,0 +1,38 @@
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 auto;max-width:560px;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;font-family:Arial,Helvetica,sans-serif">
+  <tbody>
+    <tr><td style="height:4px;background:#1f6feb"></td></tr>
+    <tr><td style="padding:28px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px">
+        <tbody>
+          <tr>
+             <td style="width:32px;height:32px;background:#1f6feb;border-radius:6px;text-align:center;color:#ffffff;font-weight:700;font-size:16px;vertical-align:middle">S</td>
+             <td style="padding-left:12px;font-size:16px;font-weight:700;color:#1a1a1a">StockFlow Demo</td>
+          </tr>
+        </tbody>
+      </table>
+      <h1 style="margin:0 0 8px;font-size:20px;font-weight:700;color:#1a1a1a">PIN Login Anda</h1>
+      <p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#374151">
+        Halo <strong><%= @user.name %></strong>, berikut adalah PIN login Anda untuk mengakses akun StockFlow Demo.
+      </p>
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:8px;padding:16px 14px;font-size:13px;line-height:1.5;margin:0 0 16px;text-align:center">
+        <div style="font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px">PIN Login</div>
+        <div style="font-size:28px;font-weight:700;letter-spacing:6px;color:#1a1a1a"><%= @pin %></div>
+      </div>
+      <p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#374151">
+        Masukkan PIN di atas bersama email terdaftar Anda untuk masuk ke sistem.
+      </p>
+      <div style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.5;margin:0 0 16px">
+        <strong>Waktu berlaku:</strong> PIN ini berlaku selama <strong>24 jam</strong> sejak email ini dikirim.
+      </div>
+      <div style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.5;margin:0 0 16px">
+        Jika Anda tidak meminta PIN ini, abaikan email ini. Jangan bagikan PIN kepada siapapun.
+      </div>
+    </td></tr>
+  </tbody>
+</table>
+<p style="margin:18px 0 4px;font-size:12px;color:#6b7280;text-align:center;font-family:Arial,Helvetica,sans-serif">
+   Email ini dikirim otomatis oleh sistem StockFlow Demo. Mohon tidak membalas.
+</p>
+<p style="margin:0;font-size:12px;color:#6b7280;text-align:center;font-family:Arial,Helvetica,sans-serif">
+   rachmatm.github.io &middot; maulana.rachmat@gmail.com
+</p>

@@ -1,0 +1,40 @@
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 auto;max-width:560px;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;font-family:Arial,Helvetica,sans-serif">
+  <tbody>
+    <tr><td style="height:4px;background:#dc2626"></td></tr>
+    <tr><td style="padding:28px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px">
+        <tbody>
+          <tr>
+             <td style="width:32px;height:32px;background:#dc2626;border-radius:6px;text-align:center;color:#ffffff;font-weight:700;font-size:16px;vertical-align:middle">S</td>
+             <td style="padding-left:12px;font-size:16px;font-weight:700;color:#1a1a1a">StockFlow Demo</td>
+          </tr>
+        </tbody>
+      </table>
+      <h1 style="margin:0 0 8px;font-size:20px;font-weight:700;color:#1a1a1a">Bukti pembayaran ditolak</h1>
+      <p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#374151">
+        Halo <strong><%= @customer.name %></strong>, kami tidak dapat memverifikasi bukti pembayaran untuk tagihan <strong><%= @order.number %></strong>.
+      </p>
+      <div style="background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.5;margin:0 0 16px">
+        Alasan penolakan: <strong><%= @reason %></strong>
+      </div>
+      <p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#374151">
+        Silakan periksa kembali dan unggah ulang bukti transfer yang sesuai. Reservasi stok masih aktif selama batas waktu SLA belum terlewati.
+      </p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:8px 0 4px">
+        <tbody>
+          <tr>
+            <td style="background:#dc2626;border-radius:8px;padding:12px 22px;font-size:14px;font-weight:700;color:#ffffff;text-align:center">
+              <a href="<%= @order_url %>" style="color:#ffffff;text-decoration:none;font-weight:700;font-size:14px">Upload Ulang Bukti</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </td></tr>
+  </tbody>
+</table>
+<p style="margin:18px 0 4px;font-size:12px;color:#6b7280;text-align:center;font-family:Arial,Helvetica,sans-serif">
+   Email ini dikirim otomatis oleh sistem StockFlow Demo. Mohon tidak membalas.
+</p>
+<p style="margin:0;font-size:12px;color:#6b7280;text-align:center;font-family:Arial,Helvetica,sans-serif">
+   rachmatm.github.io &middot; maulana.rachmat@gmail.com
+</p>

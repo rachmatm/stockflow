@@ -1,0 +1,55 @@
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 auto;max-width:560px;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;font-family:Arial,Helvetica,sans-serif">
+  <tbody>
+    <tr><td style="height:4px;background:#7c3aed"></td></tr>
+    <tr><td style="padding:28px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px">
+        <tbody>
+          <tr>
+             <td style="width:32px;height:32px;background:#7c3aed;border-radius:6px;text-align:center;color:#ffffff;font-weight:700;font-size:16px;vertical-align:middle">S</td>
+             <td style="padding-left:12px;font-size:16px;font-weight:700;color:#1a1a1a">StockFlow Demo</td>
+          </tr>
+        </tbody>
+      </table>
+      <h1 style="margin:0 0 8px;font-size:20px;font-weight:700;color:#1a1a1a">Bukti pembayaran baru masuk</h1>
+      <p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#374151">
+        Tim gudang, pembeli <strong><%= @customer.name %></strong> telah mengunggah bukti pembayaran untuk tagihan <strong><%= @order.number %></strong>.
+      </p>
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.5;margin:0 0 16px">
+        Tindakan diperlukan: verifikasi bukti dalam panel admin sebelum SLA fulfillment. Nominal tagihan: <strong>Rp<%= @total.to_s.gsub(/(\d)(?=(\d{3})+(?!\d))/,'\\1.') %></strong>.
+      </div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px;font-size:13px">
+        <tbody>
+          <tr>
+            <td style="padding:0 0 8px;color:#6b7280;font-size:12px;text-transform:uppercase">Rincian</td>
+            <td style="padding:0 0 8px;text-align:right;color:#6b7280;font-size:12px"></td>
+          </tr>
+          <% @items.each do |item| %>
+            <tr>
+              <td style="padding:6px 0;border-top:1px solid #e5e7eb;color:#1a1a1a"><%= item.product_name %> <span style="color:#6b7280">&times; <%= item.quantity %></span></td>
+              <td style="padding:6px 0;border-top:1px solid #e5e7eb;text-align:right;color:#1a1a1a">Rp<%= item.total_amount.to_s.gsub(/(\d)(?=(\d{3})+(?!\d))/,'\\1.') %></td>
+            </tr>
+          <% end %>
+          <tr>
+            <td style="padding:10px 0 0;border-top:2px solid #1a1a1a;font-weight:700;color:#1a1a1a">Total</td>
+            <td style="padding:10px 0 0;border-top:2px solid #1a1a1a;text-align:right;font-weight:700;font-size:16px;color:#7c3aed">Rp<%= @total.to_s.gsub(/(\d)(?=(\d{3})+(?!\d))/,'\\1.') %></td>
+          </tr>
+        </tbody>
+      </table>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:8px 0 4px">
+        <tbody>
+          <tr>
+            <td style="background:#7c3aed;border-radius:8px;padding:12px 22px;font-size:14px;font-weight:700;color:#ffffff;text-align:center">
+              <a href="<%= @admin_url %>" style="color:#ffffff;text-decoration:none;font-weight:700;font-size:14px">Buka Panel Verifikasi</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </td></tr>
+  </tbody>
+</table>
+<p style="margin:18px 0 4px;font-size:12px;color:#6b7280;text-align:center;font-family:Arial,Helvetica,sans-serif">
+   Email ini dikirim otomatis oleh sistem StockFlow Demo. Mohon tidak membalas.
+</p>
+<p style="margin:0;font-size:12px;color:#6b7280;text-align:center;font-family:Arial,Helvetica,sans-serif">
+   rachmatm.github.io &middot; maulana.rachmat@gmail.com
+</p>
