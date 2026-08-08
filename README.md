@@ -19,7 +19,7 @@ Demo application showcasing the order lifecycle with stock reservation, payment 
 | Buyer | buyer@example.test |
 | Admin | admin@tiba.local |
 
-To log in, visit the frontend and click "Forgot PIN". The system sends a Login PIN email to the account's email address. Open https://mailpit.rachmat.pro and inspect the latest email for that recipient — the PIN is included in the body.
+To log in, visit the frontend and click "Kirim PIN ke Email". The system sends a Login PIN email to the account's email address. Open https://mailpit.rachmat.pro and inspect the latest email for that recipient - the PIN is included in the body.
 
 ## Outgoing Emails
 
